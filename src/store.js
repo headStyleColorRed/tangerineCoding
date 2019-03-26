@@ -5,12 +5,15 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    key:{},
 
   },
   mutations: {
-
+    changekey(state, key) {
+      state.key = key;
+    },
   },
-  actions: {
-
+  getters: {
+    key: state => state.key,
   }
 })
