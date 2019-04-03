@@ -2,7 +2,7 @@
   <div class="everythinghere">
     <div class="navegacionGuapa">
       <div class="tituloNavegacion">
-        <h1>Tangerine Coder</h1>
+        <h1 style="cursor:pointer" v-on:click="home()">Tangerine Coder</h1>
       </div>
       <div class="hamburguesa">
         <v-icon v-on:click="drawer = !drawer" class="iconoHamburguesa">menu</v-icon>

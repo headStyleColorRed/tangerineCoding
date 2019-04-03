@@ -17,12 +17,21 @@
         <v-icon class="pointer">fab fa-youtube</v-icon>
       </div>
     </div>
+
+    <!-- B U S C A N D O   A   N E M O   -->
     <div class="buscador">
       <div class="buscadorWrapper">
-        <input class="input1" type="text" placeholder="Search...">
-        <v-icon class="input2">search</v-icon>
+        <input v-model="search" class="input1" type="text" placeholder="Search...">
+        <v-icon v-on:click="toAlmanaque(search)" class="input2">search</v-icon>
       </div>
+      <v-card class="searchedItems">
+        <div v-for="(posts, index) in filteredList" :key="index" class="resultados">
+          <p v-on:click="search = posts">{{posts}}</p>
+        </div>
+      </v-card>
     </div>
+    <!--   N E M O   E N C O N T R A D O  -->
+
     <div class="lassTags">
       <h2 class="fontTitle">Tags</h2>
       <div class="chipsChips">
@@ -40,13 +49,14 @@
         class="titulosdearticulos"
         v-for="(articulo, index) in contenido"
         :key="index"
+        v-on:click="renderTemplate(articulo)"
       >{{articulo.titulo}}</h4>
     </div>
   </div>
 </template>
 
 <script>
-import contenido from "../assets/database/articulos.json";
+import axios from "axios";
 export default {
   data() {
     return {
@@ -73,11 +83,82 @@ export default {
           foto: "node.png"
         }
       },
-      contenido: {}
+      contenido: {},
+      search: "",
+      palabrasMasBuscadas: [
+        "Bitcoin",
+        "Litecoin",
+        "Ethereum ",
+        "Zcash",
+        "Dash ",
+        "Ripple ",
+        "Monero ",
+        "Bitcoin Cash",
+        "NEO ",
+        "EOS ",
+        "Theter",
+        "Zcash",
+        "Python",
+        "Ruby",
+        "JavaScript",
+        "C++",
+        "Ruby",
+        "Java",
+        "TypeScript",
+        "TypeScript",
+        "C#",
+        "PHP",
+        "Solidity",
+        "Node Js",
+        "MongoDb",
+        "Vue"
+      ]
     };
   },
   mounted() {
-    this.contenido = contenido;
+    if (this.$store.getters.biblioteca.nada) {
+      let paginaHaCargado = setInterval(() => {
+        if (store.getters.loaded == false) {
+        } else {
+          this.retrieveData();
+          clearInterval(paginaHaCargado);
+        }
+      }, 500);
+    } else {
+      this.retrieveData();
+    }
+  },
+  methods: {
+    renderTemplate(item) {
+      this.$store.commit("changeArticulo", item);
+      this.$store.commit("changeKey", item.key);
+      this.$router.push({
+        path: "/template",
+        query: { articulo: `${item.key}` }
+      });
+    },
+    retrieveData() {
+      this.contenido = this.$store.getters.biblioteca;
+    },
+    toAlmanaque(event){
+      if (event.length == 0) {
+        return
+      } else {
+      this.$store.commit("changeSearch", event);
+      this.$router.push("/almanaque")
+      }
+    }
+  },
+  computed: {
+    filteredList() {
+      if (this.search == "") {
+        return;
+      } else {
+        return this.palabrasMasBuscadas.filter(result => {
+          return result.toLowerCase().includes(this.search.toLowerCase());
+        });
+      }
+    }
   }
 };
 </script>
@@ -120,12 +201,35 @@ export default {
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
   margin-top: 1rem;
 }
+
+.buscador {
+  position: relative;
+  display: grid;
+}
+
 .buscadorWrapper {
   display: grid;
   grid-template-columns: 1fr 1fr;
   background-color: #ffffff;
   border-radius: 30px;
   height: 3rem;
+}
+
+.searchedItems {
+  position: absolute;
+  top: 3.2rem;
+  left: 20%;
+  background-color: white;
+  width: 60%;
+  text-align: center;
+  border-radius: 5px;
+  max-height: 11rem;
+  overflow: hidden;
+  z-index: 9;
+}
+
+.resultados p {
+  margin-top: 1rem;
 }
 
 input:focus {
@@ -155,11 +259,11 @@ input:focus {
   cursor: pointer;
 }
 
-
-  .titulosdearticulos {
-    margin-top: 0.5rem;
-    font-family: "Playfair Display SC", serif;
-  }
+.titulosdearticulos {
+  cursor: pointer;
+  margin-top: 0.5rem;
+  font-family: "Playfair Display SC", serif;
+}
 
 @media only screen and (max-width: 1000px) {
   .mifoto {
@@ -177,6 +281,11 @@ input:focus {
     margin-top: 1rem;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
+  }
+  .titulosdearticulos {
+    cursor: pointer;
+    margin-top: 0.5rem;
+    font-family: "Playfair Display SC", serif;
   }
 }
 
@@ -264,10 +373,8 @@ input:focus {
     grid-template-rows: 1fr 0.3fr 0.3fr 0.3fr 0.5fr 1fr;
     grid-gap: 0rem;
   }
-
 }
 </style>
 
 font-family: 'Roboto Mono', monospace;
 font-family: 'Libre Baskerville', serif;
-font-family: 'Playfair Display SC', serif;

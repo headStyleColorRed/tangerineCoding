@@ -10,34 +10,60 @@
         </p>
       </div>
       <div class="divisionadoVertical">
-        <div class="contenidoDelBlog">
+        <div v-if="loaded" class="contenidoDelBlog">
           <bigCards/>
         </div>
-        <div class="columnaDeLaIzquierda">
+        <div v-if="loadedLoaded" class="columnaDeLaIzquierda">
           <columnaDerecha/>
         </div>
       </div>
+    </div>
+    <div class="loader">
+      <loader v-if="!loaded"/>
     </div>
   </div>
 </template>
 
 <script>
 import navbar from "../components/navbar.vue";
-import appFooter from "../components/appFooter.vue";
 import bigCards from "../components/bigCards.vue";
 import columnaDerecha from "../components/columnaDerecha.vue";
+import loader from "../components/loader.vue";
+import store from "../store.js";
+import axios from "axios";
 
 export default {
   data() {
     return {
-      mifoto: "mifoto.png"
+      mifoto: "mifoto.png",
+      loaded: false,
+      loadedLoaded: false
     };
+  },
+  mounted() {
+    if (this.$store.getters.biblioteca.nada) {
+      let paginaHaCargado = setInterval(() => {
+        if (store.getters.loaded == false) {
+        } else {
+          this.loaded = true;
+          this.loadedLoaded = true;
+          clearInterval(paginaHaCargado);
+        }
+      }, 500);
+    } else {
+      this.loaded = true;
+      this.loadedLoaded = true;
+    }
   },
   components: {
     navbar,
-    appFooter,
     bigCards,
-    columnaDerecha
+    columnaDerecha,
+    loader
+  },
+  methods: {
+  },
+  computed: {
   }
 };
 </script>
@@ -70,6 +96,13 @@ export default {
   grid-gap: 2rem;
 }
 
+.loader {
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
 @media only screen and (max-width: 1000px) {
   .divisionadoVertical {
     display: grid;
@@ -85,10 +118,8 @@ export default {
   }
 }
 
-
 /*-------------- IPHONE 5 ----------------*/
-@media only screen and (min-device-width : 320px) and (max-device-width : 568px) and (orientation : portrait) { 
-  
+@media only screen and (min-device-width: 320px) and (max-device-width: 568px) and (orientation: portrait) {
   .homeWrapper {
     padding: 0 0.2rem;
     padding-top: 3.5rem;
@@ -109,10 +140,7 @@ export default {
 }
 
 /*---------------- IPAD ----------------*/
-@media only screen 
-and (min-device-width : 768px) 
-and (max-device-width : 1024px)  { 
-  
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
   .homeWrapper {
     padding: 0 3rem;
     padding-top: 3.5rem;
@@ -121,7 +149,6 @@ and (max-device-width : 1024px)  {
     width: 100vw;
   }
 }
-
 </style>
 
 

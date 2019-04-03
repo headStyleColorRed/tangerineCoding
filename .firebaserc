@@ -1,5 +1,7 @@
 {
   "projects": {
-    "TangerinCoder": "tangerine-coder"
+    "TangerinCoder": "tangerine-coder",
+    "runbud": "run-bud",
+    "travel china": "chineseassap"
   }
 }

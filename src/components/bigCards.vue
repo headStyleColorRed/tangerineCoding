@@ -1,16 +1,24 @@
 <template>
   <div class="laCard">
     <v-layout class="laCard">
-      <v-card class="pointer" flat width="100%" v-for="(item, index) in contenido" :key="index" v-on:click="renderTemplate(item.key)">
-        <v-img :src="require(`../assets/fotos/${item.imagen}`) " aspect-ratio="1.5"></v-img>
+      <v-card
+        class="pointer"
+        flat
+        width="100%"
+        v-for="(item, index) in this.$store.getters.biblioteca"
+        :key="index"
+        v-on:click="renderTemplate(item, index)"
+      >
+        <v-img :src="item.imagen " aspect-ratio="1.5"></v-img>
 
         <v-card-title primary-title>
           <div class="contenidoDeLaCard">
-            <h3>{{item.titulo}}</h3>
-            <p>{{item.contenido}}...</p>
+            <h3 v-html="item.titulo"></h3>
+            <p v-html="item.contenido.slice(0,399)"></p>
             <div class="calendario">
-              <div class="fecha"></div>
-              <div class="etiqueta"></div>
+              <div class="fecha">
+              {{item.fecha}}
+              </div>
             </div>
           </div>
         </v-card-title>
@@ -20,32 +28,22 @@
 </template>
 
 <script>
-import data from "../assets/database/articulos.json";
+import axios from "axios";
 export default {
   data() {
     return {
-      contenido:{},
+      contenido: {},
     };
   },
-  methods:{
-    renderTemplate(key){
-
-      this.$store.commit("changekey", key);
-      this.$router.push("/template")
+  methods: {
+    renderTemplate(item) {
+      this.$store.commit("changeArticulo", item);
+      this.$store.commit("changeKey", item.key);
+      this.$router.push({path: "/template", query: {articulo: `${item.key}`}});
     },
-    cortaTextos(){
-      for (const a in this.contenido) {
-        if (this.contenido.hasOwnProperty(a)) {
-          this.contenido[a].contenido =  this.contenido[a].contenido.slice(0, 400)
-          
-        }
-      }
-    }
   },
   mounted() {
-    this.contenido = data;
-    this.cortaTextos();
-  },
+  }
 };
 </script>
 
@@ -60,27 +58,34 @@ export default {
   src: url("../assets/fonts/Optimas/OptimaMedium.ttf");
 }
 
-.laCard{
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: auto;
-    grid-gap: 3rem;
+.laCard {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto;
+  grid-gap: 3rem;
 }
 
-.contenidoDeLaCard h3{
-text-align: center;
-font-size: 1.8rem;
-letter-spacing: 0.1rem;
-margin-bottom: 1rem;
+.contenidoDeLaCard h3 {
+  text-align: center;
+  font-size: 1.8rem;
+  letter-spacing: 0.1rem;
+  margin-bottom: 1rem;
 }
 
-.contenidoDeLaCard p{
-    text-align: center;
-    font-family: MaratFina;
-    font-size: 1.2rem;
+.contenidoDeLaCard p {
+  text-align: center;
+  font-family: MaratFina;
+  font-size: 1.2rem;
 }
 
-.pointer{
+.fecha{
+  text-align: center;
+  color: rgb(167, 167, 167);
+  font-size: 0.75rem;
+  font-family: lato;
+}
+
+.pointer {
   cursor: pointer;
 }
 </style>

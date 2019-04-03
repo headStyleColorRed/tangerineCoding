@@ -212,31 +212,16 @@ export default {
       }
     },
     cargalapagina() {
-        let data = this.$store.getters.biblioteca;
-        let lakey = this.$route.query.articulo;
-        this.articulo = data[lakey];
+        let data = this.$store.getters.bibliotecaTest;
+        let lakey = this.$store.getters.articulo;
+        this.articulo = data;
         this.parseContenido();
         window.scrollTo(0, 0);
         this.loading = true;
     }
   },
-  mounted() {
-    let counter = 0;
-    if (this.$store.getters.biblioteca.nada) {
-          let paginaHaCargado = setInterval(() => {
-            counter++
-      if (store.getters.loaded == false) {
-      } else if(counter >= 20){
-        this.$router.push("/");
-        clearInterval(paginaHaCargado);
-      } else {
+  mounted() {   
         this.cargalapagina();
-        clearInterval(paginaHaCargado);
-      }
-    }, 500);
-    } else {      
-        this.cargalapagina();
-    }
   },
   computed: {
     cargado() {
@@ -280,12 +265,10 @@ export default {
   margin: 0 6rem;
   font-family: Raleway;
   font-size: 1.4rem;
+  display: grid;
 }
 
-img {
-  height: 50px;
-  margin: 10rem;
-}
+
 
 
 .sharing {
@@ -346,6 +329,7 @@ img {
 .moremore {
   text-align: center;
 }
+
 
 .comentarios {
   padding-bottom: 5rem;
@@ -437,6 +421,10 @@ input:focus {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+  
+.divContenido >>> .img-fluid{
+  max-width: 90vw;
 }
 
 @media only screen and (max-width: 1300px) {
